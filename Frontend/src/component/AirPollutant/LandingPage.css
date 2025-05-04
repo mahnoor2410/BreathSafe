@@ -1,0 +1,42 @@
+@keyframes kenburns {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+    }
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .animate-kenburns {
+    animation: kenburns 20s infinite alternate;
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s infinite;
+  }
+  
+  /* Smooth transitions for elements */
+  .transition-all {
+    transition-property: all;
+  }
+  
+  .duration-300 {
+    transition-duration: 300ms;
+  }
+  
+  .duration-500 {
+    transition-duration: 500ms;
+  }
+  
+  .duration-1000 {
+    transition-duration: 1000ms;
+  }
