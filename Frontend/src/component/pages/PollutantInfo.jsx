@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Footer from '../Layout/Footer';
 import Navbar from '../Layout/Navbar';
 import {
@@ -14,8 +14,23 @@ import {
   FaLeaf
 } from "react-icons/fa";
 import { motion } from 'framer-motion';
+import { useLocation, Link } from 'react-router-dom';
 
 const PollutantInfo = () => {
+  const topRef = useRef(null);
+  const location = useLocation();
+
+  // Scroll to top on route change or component mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    const timer = setTimeout(() => {
+      if (topRef.current) {
+        topRef.current.scrollIntoView({ behavior: 'instant' });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
   // Animation variants
   const container = {
     hidden: { opacity: 0 },
@@ -93,6 +108,7 @@ const PollutantInfo = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
+      <div ref={topRef}></div>
       {/* Navbar */}
       <Navbar />
       
@@ -146,12 +162,16 @@ const PollutantInfo = () => {
                     <h3 className="text-xl font-semibold">{card.title}</h3>
                   </div>
                   <p className="mb-4 opacity-90">{card.desc}</p>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="mt-4 inline-block px-4 py-2 bg-white bg-opacity-50 rounded-lg font-medium text-sm shadow-sm"
-                  >
-                    Learn more →
-                  </motion.div>
+                  {/* Progress bar added */}
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "100%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5, delay: index * 0.1 }}
+                      className={`h-1.5 rounded-full ${card.textColor.replace('text-', 'bg-')}`}
+                    />
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -175,7 +195,7 @@ const PollutantInfo = () => {
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.2 }}
-                      viewport={{ once: true }}
+                      viewport={{ once: true, margin: "-100px" }}
                       className="flex items-start"
                     >
                       <div className={`p-3 rounded-lg ${
@@ -199,7 +219,7 @@ const PollutantInfo = () => {
                               pollutant.level === "Medium" ? "45%" : "25%"
                             }}
                             transition={{ duration: 1, delay: i * 0.3 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: true, margin: "-100px" }}
                             className={`h-full ${
                               pollutant.level === "High" ? "bg-red-400" :
                               pollutant.level === "Moderate" ? "bg-orange-400" :
@@ -219,7 +239,7 @@ const PollutantInfo = () => {
                   initial={{ scale: 0.9, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "-100px" }}
                   className="text-center w-full max-w-md"
                 >
                   <div className="relative w-48 h-48 mx-auto mb-6">
@@ -236,13 +256,15 @@ const PollutantInfo = () => {
                   </div>
                   <h3 className="text-xl font-bold text-gray-800 mb-2">Real-time Air Quality</h3>
                   <p className="text-gray-600 mb-6 text-sm">Check current pollution levels in your area</p>
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-shadow"
-                  >
-                    View Live Map
-                  </motion.button>
+                  <Link to="/Map">
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-shadow"
+                    >
+                      View Live Map
+                    </motion.button>
+                  </Link>
                 </motion.div>
               </div>
             </div>
@@ -253,7 +275,7 @@ const PollutantInfo = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             className="bg-gradient-to-r from-blue-600 to-teal-600 rounded-xl shadow-sm overflow-hidden text-white"
           >
             <div className="md:flex">
@@ -288,7 +310,7 @@ const PollutantInfo = () => {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "-100px" }}
                   className="bg-white bg-opacity-10 rounded-lg p-5 mb-6 border border-white border-opacity-10"
                 >
                   <p className="mb-3 text-blue-100 opacity-90">Indoor air can be 2-5x more polluted than outdoor air due to:</p>
@@ -311,13 +333,15 @@ const PollutantInfo = () => {
                     </li>
                   </ul>
                 </motion.div>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-2.5 bg-white text-blue-600 rounded-lg font-semibold text-sm shadow-md hover:shadow-lg transition-shadow"
-                >
-                  Get Personalized Recommendations
-                </motion.button>
+                <Link to="/Map">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-2.5 bg-white text-blue-600 rounded-lg font-semibold text-sm shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    Get Personalized Recommendations
+                  </motion.button>
+                </Link>
               </div>
             </div>
           </motion.div>

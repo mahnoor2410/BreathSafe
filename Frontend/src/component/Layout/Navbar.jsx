@@ -67,6 +67,11 @@ const Navbar = () => {
         {/* Navigation Links (Centered on Desktop) */}
         <ul className="nav-links">
           <li>
+            <Link to="/" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              Home
+            </Link>
+          </li>
+          <li>
             <Link to="/chatbot" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
               <FaRobot /> ChatBot
             </Link>
@@ -124,6 +129,11 @@ const Navbar = () => {
         {/* Mobile Menu Dropdown */}
         <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
           <ul className="mobile-nav-links">
+            <li>
+              <Link to="/" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+                Home
+              </Link>
+            </li>
             <li>
               <Link to="/chatbot" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
                 <FaRobot /> ChatBot
@@ -197,6 +207,10 @@ const Navbar = () => {
 
 // Styled components
 const StyledNav = styled.nav`
+  position: fixed; /* Make navbar fixed */
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -204,9 +218,9 @@ const StyledNav = styled.nav`
   background: linear-gradient(45deg, #1f4037, #99f2c8);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   font-family: "Roboto", sans-serif;
-  position: relative;
   z-index: 1000;
   min-height: 70px; /* Increased minimum height for wider appearance */
+  width: 100%; /* Ensure full width */
 
   .logo {
     display: flex;
@@ -274,7 +288,7 @@ const StyledNav = styled.nav`
     &.open {
       display: block;
       position: absolute;
-      top: 100%;
+      top: 100%; /* Position below fixed navbar */
       left: 0;
       right: 0;
       background: linear-gradient(45deg, #1f4037, #99f2c8);

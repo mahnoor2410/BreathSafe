@@ -77,9 +77,7 @@ const Footer = () => {
               {[
                 { name: "Home", path: "/" },
                 { name: "Air Quality Map", path: "/map" },
-                { name: "Health Tips", path: "/health-tips" },
                 { name: "About Us", path: "/aboutus" },
-                { name: "Research", path: "/research" },
                 { name: "Contact", path: "/contactus" }
               ].map((link, index) => (
                 <li key={index}>

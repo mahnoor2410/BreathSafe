@@ -88,7 +88,7 @@ function AirPollutionMap() {
 
         if (!window.google) {
             const script = document.createElement('script');
-            script.src = `https://maps.gomaps.pro/maps/api/js?key=AlzaSyYqeKPq6X7PvzjPRbmG4Ehg7Fv-9B5x60D&libraries=geometry,places`;
+            script.src = `https://maps.gomaps.pro/maps/api/js?key=AlzaSyEZ2wzt5oN3nk83Fy-BJHrPN26N603w7ab&libraries=geometry,places`;
             script.async = true;
             script.defer = true;
             script.onload = initMap;

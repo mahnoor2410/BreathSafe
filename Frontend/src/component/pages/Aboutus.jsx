@@ -6,71 +6,8 @@ import Navbar from '../Layout/Navbar';
 const Aboutus = () => {
   return (
     <>
-      <Navbar/>
-      <div className="w-full min-h-screen bg-white text-gray-800 overflow-hidden">
-        {/* Hero Section with Parallax Effect */}
-        <div className="relative w-full h-screen overflow-hidden">
-          {/* Background Image with Parallax Effect */}
-          <motion.div 
-            className="absolute inset-0 w-full h-full"
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.5 }}
-          >
-            <img
-              src="/images/Airpollutant.jpg"
-              alt="Air Quality Monitoring"
-              className="w-full h-full object-cover"
-            />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-green-900/70 to-green-800/40"></div>
-          </motion.div>
-          
-          {/* Hero Content */}
-          <div className="relative z-10 flex flex-col justify-center items-center h-full text-center px-4">
-            <motion.h1 
-              className="text-5xl md:text-7xl font-bold text-white mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <span className="text-green-300">Breathe</span><span className="text-white">Safe</span>
-            </motion.h1>
-            
-            <motion.p 
-              className="mt-4 text-xl md:text-3xl text-white max-w-3xl leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              Every breath matters. Monitor air quality in real time with{" "}
-              <span className="font-semibold text-green-200">BreatheSmart</span>.
-            </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-12"
-            >
-              <button className="px-8 py-3 bg-green-500 hover:bg-green-600 text-white rounded-full font-medium text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                Learn How It Works
-              </button>
-            </motion.div>
-          </div>
-          
-          {/* Scrolling Indicator */}
-          <motion.div 
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </motion.div>
-        </div>
-
+      <Navbar />
+      <div className="w-full min-h-screen bg-white text-gray-800 pt-[70px] md:pt-[60px] sm:pt-[50px]">
         {/* About Us Section */}
         <section className="px-6 py-20 bg-gradient-to-b from-white to-gray-50">
           <div className="max-w-6xl mx-auto">
@@ -95,7 +32,7 @@ const Aboutus = () => {
                 viewport={{ once: true }}
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1584473457406-6240486418e9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                  src="images\Airpollutant.jpg" 
                   alt="Air pollution monitoring" 
                   className="rounded-xl shadow-2xl w-full h-auto"
                 />
@@ -169,13 +106,10 @@ const Aboutus = () => {
                 </p>
               </motion.div>
             </div>
-            
- 
-              </div>
-
+          </div>
         </section>
+        <Footer />
       </div>
-      <Footer/>
     </>
   );
 };
