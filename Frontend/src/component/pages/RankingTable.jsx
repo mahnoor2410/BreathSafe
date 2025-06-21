@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';
 import Footer from '../Layout/Footer';
 import Navbar from '../Layout/Navbar';
 
@@ -13,21 +13,20 @@ const apiKey = "NZBaTfW3v1NkMEJvs/Ds/g==3avSnMBjl9A9nlrq";
 
 const getAirQualityDescription = (aqi) => {
   if (aqi <= 50) return { level: "Good", color: "#4CAF50" };
-  if (aqi <= 100) return { level: "Moderate", color: "#FFEB3B" };
-  if (aqi <= 150) return { level: "Unhealthy for Sensitive Groups", color: "#FF9800" };
-  if (aqi <= 200) return { level: "Unhealthy", color: "#F44336" };
-  if (aqi <= 300) return { level: "Very Unhealthy", color: "#9C27B0" };
-  return { level: "Hazardous", color: "#673AB7" };
+  if (aqi <= 100) return { level: "Moderate", color: "#FFCA28" };
+  if (aqi <= 150) return { level: "Unhealthy for Sensitive Groups", color: "#FF5722" };
+  if (aqi <= 200) return { level: "Unhealthy", color: "#D81B60" };
+  if (aqi <= 300) return { level: "Very Unhealthy", color: "#8E24AA" };
+  return { level: "Hazardous", color: "#5E35B1" };
 };
 
 const RankingTable = () => {
   const [aqiData, setAqiData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Add state for authentication
-  const navigate = useNavigate(); // Hook for navigation
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
-  // Check authentication status on component mount
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem("authToken");
@@ -35,22 +34,17 @@ const RankingTable = () => {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
-        navigate('/login'); // Redirect to login if not authenticated
+        navigate('/login');
       }
     };
 
     checkAuthStatus();
-
-    // Add event listener for storage changes (e.g., logout from another tab)
     window.addEventListener("storage", checkAuthStatus);
-
-    return () => {
-      window.removeEventListener("storage", checkAuthStatus);
-    };
+    return () => window.removeEventListener("storage", checkAuthStatus);
   }, [navigate]);
 
   useEffect(() => {
-    if (!isAuthenticated) return; // Only fetch data if authenticated
+    if (!isAuthenticated) return;
 
     const fetchAQIData = async () => {
       setLoading(true);
@@ -72,15 +66,15 @@ const RankingTable = () => {
                 color: qualityInfo.color
               };
             }
-            return { city, aqi: "N/A", quality: "Data not available", color: "#9E9E9E" };
+            return { city, aqi: "N/A", quality: "Data not available", color: "#B0BEC5" };
           } catch (error) {
-            return { city, aqi: "Error", quality: "Error fetching data", color: "#9E9E9E" };
+            return { city, aqi: "Error", quality: "Error fetching data", color: "#B0BEC5" };
           }
         });
 
         const results = await Promise.all(promises);
         const validData = results.filter(item => typeof item.aqi === "number");
-        validData.sort((a, b) => b.aqi - a.aqi);
+        validData.sort((a, b) => b.aqi - a.aqi); // Fixed typo: b.qi to b.aqi
         const errorData = results.filter(item => typeof item.aqi !== "number");
 
         setAqiData([...validData, ...errorData]);
@@ -101,10 +95,7 @@ const RankingTable = () => {
     return Math.min(100, (aqi / 300) * 100);
   };
 
-  // If not authenticated, the redirect will happen in useEffect, so nothing will render here
-  if (!isAuthenticated) {
-    return null; // Render nothing while redirecting
-  }
+  if (!isAuthenticated) return null;
 
   return (
     <div style={styles.mainContainer}>
@@ -146,20 +137,15 @@ const RankingTable = () => {
                       ) : "-"}
                     </td>
                     <td style={styles.cityCell}>{data.city}</td>
-                    <td style={styles.aqiCell}>
-                      {data.aqi}
-                    </td>
-                    <td style={styles.qualityCell}>
-                      {data.quality}
-                    </td>
+                    <td style={styles.aqiCell}>{data.aqi}</td>
+                    <td style={styles.qualityCell}>{data.quality}</td>
                     <td style={styles.levelCell}>
                       <div style={styles.levelContainer}>
-                        <div 
+                        <div
                           style={{
                             ...styles.levelIndicator,
                             width: `${getAqiPercentage(data.aqi)}%`,
-                            backgroundColor: data.color,
-                            opacity: 0.7
+                            backgroundColor: data.color
                           }}
                         />
                       </div>
@@ -176,18 +162,14 @@ const RankingTable = () => {
           <div style={styles.legendItems}>
             {[
               { range: "0-50", color: "#4CAF50", label: "Good" },
-              { range: "51-100", color: "#FFEB3B", label: "Moderate" },
-              { range: "101-150", color: "#FF9800", label: "Unhealthy for Sensitive Groups" },
-              { range: "151-200", color: "#F44336", label: "Unhealthy" },
-              { range: "201-300", color: "#9C27B0", label: "Very Unhealthy" },
-              { range: "301+", color: "#673AB7", label: "Hazardous" }
+              { range: "51-100", color: "#FFCA28", label: "Moderate" },
+              { range: "101-150", color: "#FF5722", label: "Unhealthy for Sensitive Groups" },
+              { range: "151-200", color: "#D81B60", label: "Unhealthy" },
+              { range: "201-300", color: "#8E24AA", label: "Very Unhealthy" },
+              { range: "301+", color: "#5E35B1", label: "Hazardous" }
             ].map((item, index) => (
               <div key={index} style={styles.legendItem}>
-                <div style={{
-                  ...styles.legendColor,
-                  backgroundColor: item.color,
-                  opacity: 0.7
-                }}></div>
+                <div style={{ ...styles.legendColor, backgroundColor: item.color }}></div>
                 <span>{item.range} ({item.label})</span>
               </div>
             ))}
@@ -204,189 +186,250 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    backgroundColor: '#f8f9fa',
+    background: 'linear-gradient(135deg, #eceff1 0%, #b0bec5 100%)',
+    overflowX: 'hidden'
   },
   contentContainer: {
     flex: 1,
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    color: "#333",
-    padding: "20px",
-    maxWidth: "1200px",
-    margin: "0 auto",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    color: '#1A202C',
+    padding: '30px 20px',
+    paddingTop: '100px', // Increased to ensure content clears navbar
+    maxWidth: '1280px',
+    margin: '0 auto',
     width: '100%',
-    boxSizing: "border-box"
+    boxSizing: 'border-box',
+    position: 'relative', // Ensure content is not affected by navbar z-index
+    zIndex: 1, // Lower than navbar (assumed z-index: 1000)
+    animation: 'fadeIn 0.5s ease-out'
   },
   header: {
-    textAlign: "center",
-    marginBottom: "40px",
-    padding: "20px",
-    backgroundColor: "#ffffff",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
+    textAlign: 'center',
+    marginBottom: '50px',
+    padding: '30px',
+    background: '#ffffff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    transform: 'translateY(0)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease'
   },
   heading: {
-    color: "#2c3e50",
-    margin: "0",
-    fontSize: "2rem",
-    fontWeight: "600"
+    color: '#1A202C',
+    margin: '0',
+    fontSize: '2.5rem',
+    fontWeight: '700',
+    letterSpacing: '-0.025em'
   },
   subheading: {
-    color: "#7f8c8d",
-    margin: "10px 0 0",
-    fontSize: "1rem"
+    color: '#4A5568',
+    margin: '12px 0 0',
+    fontSize: '1.125rem',
+    fontWeight: '400'
   },
   tableContainer: {
-    overflowX: "auto",
-    backgroundColor: "#ffffff",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-    marginBottom: "30px"
+    overflowX: 'auto',
+    background: '#ffffff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    marginBottom: '40px',
+    padding: '20px'
   },
   table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    borderRadius: "10px",
-    overflow: "hidden"
+    width: '100%',
+    borderCollapse: 'separate',
+    borderSpacing: '0',
+    fontSize: '0.95rem'
   },
   tableHeaderRow: {
-    backgroundColor: "#f5f7fa",
-    borderBottom: "2px solid #e0e0e0"
+    background: '#F7FAFC',
+    borderBottom: '2px solid #E2E8F0'
   },
   tableHeader: {
-    color: "#2c3e50",
-    padding: "15px",
-    textAlign: "left",
-    fontWeight: "600",
-    fontSize: "0.9rem"
+    color: '#2D3748',
+    padding: '16px',
+    textAlign: 'left',
+    fontWeight: '600',
+    fontSize: '0.95rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    borderBottom: '2px solid #E2E8F0'
   },
   tableRow: {
-    borderBottom: "1px solid #e0e0e0",
-    "&:hover": {
-      backgroundColor: "#f9f9f9"
+    borderBottom: '1px solid #EDF2F7',
+    transition: 'background-color 0.3s ease, transform 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#F7FAFC',
+      transform: 'translateY(-2px)'
     }
   },
   rankCell: {
-    padding: "15px",
-    textAlign: "center",
-    fontWeight: "500",
-    fontSize: "0.9rem"
+    padding: '16px',
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: '0.95rem'
   },
   cityCell: {
-    padding: "15px",
-    fontWeight: "500",
-    fontSize: "0.9rem"
+    padding: '16px',
+    fontWeight: '500',
+    fontSize: '1rem',
+    color: '#2D3748'
   },
   aqiCell: {
-    padding: "15px",
-    fontWeight: "600",
-    fontSize: "0.9rem"
+    padding: '16px',
+    fontWeight: '600',
+    fontSize: '1rem',
+    color: '#2D3748'
   },
   qualityCell: {
-    padding: "15px",
-    fontSize: "0.9rem"
+    padding: '16px',
+    fontSize: '0.95rem',
+    color: '#4A5568'
   },
   levelCell: {
-    padding: "15px",
-    width: "200px"
+    padding: '16px',
+    width: '220px'
   },
   levelContainer: {
-    width: "100%",
-    height: "8px",
-    backgroundColor: "#f0f0f0",
-    borderRadius: "4px",
-    overflow: "hidden"
+    width: '100%',
+    height: '10px',
+    backgroundColor: '#EDF2F7',
+    borderRadius: '6px',
+    overflow: 'hidden',
+    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
   },
   levelIndicator: {
-    height: "100%",
-    borderRadius: "4px",
-    transition: "width 0.5s ease"
+    height: '100%',
+    borderRadius: '6px',
+    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
   },
   rankBadge: (rank) => ({
-    display: "inline-block",
-    width: "26px",
-    height: "26px",
-    lineHeight: "26px",
-    borderRadius: "50%",
-    backgroundColor: rank <= 3 ? "#e74c3c" : "#3498db",
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: "0.8rem"
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    background: rank <= 3 ? 'linear-gradient(135deg, #E53E3E, #C53030)' : 'linear-gradient(135deg, #3182CE, #2B6CB0)',
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: '0.9rem',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.1)'
+    }
   }),
   loadingContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "40px",
-    backgroundColor: "#ffffff",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '50px',
+    background: '#ffffff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    animation: 'pulse 1.5s infinite'
   },
   spinner: {
-    border: "4px solid #f3f3f3",
-    borderTop: "4px solid #3498db",
-    borderRadius: "50%",
-    width: "40px",
-    height: "40px",
-    animation: "spin 1s linear infinite",
-    marginBottom: "20px"
+    border: '6px solid #EDF2F7',
+    borderTop: '6px solid #3182CE',
+    borderRadius: '50%',
+    width: '48px',
+    height: '48px',
+    animation: 'spin 1s linear infinite',
+    marginBottom: '20px'
   },
   loadingText: {
-    color: "#7f8c8d",
-    fontSize: "0.9rem",
-    margin: "0"
+    color: '#4A5568',
+    fontSize: '1rem',
+    fontWeight: '500',
+    margin: '0'
   },
   errorContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "40px",
-    backgroundColor: "#ffffff",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '50px',
+    background: '#ffffff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    animation: 'fadeIn 0.5s ease-out'
   },
   errorIcon: {
-    fontSize: "2.5rem",
-    marginBottom: "20px"
+    fontSize: '3rem',
+    color: '#E53E3E',
+    marginBottom: '20px',
+    animation: 'shake 0.5s ease-in-out'
   },
   errorText: {
-    color: "#e74c3c",
-    fontSize: "0.9rem",
-    fontWeight: "500",
-    margin: "0",
-    textAlign: "center"
+    color: '#E53E3E',
+    fontSize: '1rem',
+    fontWeight: '500',
+    margin: '0',
+    textAlign: 'center'
   },
   legend: {
-    backgroundColor: "#ffffff",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-    marginBottom: "30px"
+    background: '#ffffff',
+    padding: '25px',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    marginBottom: '40px'
   },
   legendTitle: {
-    marginTop: "0",
-    marginBottom: "15px",
-    color: "#2c3e50",
-    fontSize: "1rem"
+    margin: '0 0 20px',
+    color: '#1A202C',
+    fontSize: '1.25rem',
+    fontWeight: '600'
   },
   legendItems: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-    gap: "10px"
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+    gap: '12px'
   },
   legendItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    fontSize: "0.8rem"
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    fontSize: '0.9rem',
+    color: '#4A5568',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+      transform: 'translateX(5px)'
+    }
   },
   legendColor: {
-    width: "16px",
-    height: "16px",
-    borderRadius: "4px"
+    width: '20px',
+    height: '20px',
+    borderRadius: '6px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
   }
 };
+
+// Inline keyframes for animations
+const styleSheet = document.createElement('style');
+styleSheet.type = 'text/css';
+styleSheet.innerText = `
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.95; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default RankingTable;

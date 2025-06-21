@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Email, EqualTo # for validations
 
 class SignupForm(FlaskForm):
     class Meta:
-        csrf = False  # ✅ Disable CSRF for this API form
+        csrf = False  
 
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()]) # filled + valid ho
@@ -14,7 +14,7 @@ class SignupForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     class Meta:
-        csrf = False  # ✅ Disable CSRF for this API form
+        csrf = False  
         
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])

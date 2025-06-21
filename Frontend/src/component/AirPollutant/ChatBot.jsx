@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
@@ -52,7 +52,7 @@ const Chatbot = () => {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("authToken")}` // Add token to headers
+          'Authorization': `Bearer ${localStorage.getItem("authToken")}`
         },
         body: JSON.stringify({ message: userInput }),
         credentials: 'include',
@@ -60,7 +60,7 @@ const Chatbot = () => {
 
       if (!response.ok) {
         if (response.status === 401) {
-          localStorage.removeItem("authToken"); // Clear invalid token
+          localStorage.removeItem("authToken");
           throw new Error('Please log in to use the chatbot');
         }
         throw new Error('Failed to send message');
@@ -90,11 +90,14 @@ const Chatbot = () => {
   };
 
   if (!isAuthenticated) {
-    return null; // Render nothing while redirecting
+    return null;
   }
 
   return (
     <StyledWrapper>
+      <Link to="/" className="back-link">
+        <span className="back-icon">←</span> Back
+      </Link>
       <div className="container">
         <div className="chatbot-card">
           <div className="card-header">
@@ -167,6 +170,12 @@ const float = keyframes`
   100% { transform: translateY(0px); }
 `;
 
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
+
 const typing = keyframes`
   0% { transform: translateY(0px); }
   50% { transform: translateY(-5px); }
@@ -184,6 +193,37 @@ const StyledWrapper = styled.div`
   overflow: hidden;
   position: relative;
 
+  .back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #80b918;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 50px;
+    z-index: 3;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(128, 185, 24, 0.3);
+
+    &:hover {
+      background: #6aa017;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 18px rgba(128, 185, 24, 0.5);
+      animation: ${pulse} 1.5s infinite;
+    }
+
+    .back-icon {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+
   .container {
     width: 100%;
     max-width: 1200px;
@@ -200,7 +240,7 @@ const StyledWrapper = styled.div`
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     padding: 40px;
     width: 100%;
-    max-width: 600px;
+    max-width: 1000px;
     animation: ${fadeIn} 0.6s ease-out;
     position: relative;
     z-index: 2;
@@ -409,6 +449,7 @@ const StyledWrapper = styled.div`
     .chatbot-card {
       padding: 30px 20px;
       margin: 20px;
+      max-width: 100%;
       height: 90vh;
     }
 
@@ -423,6 +464,10 @@ const StyledWrapper = styled.div`
 
     .send-button {
       width: 100%;
+    }
+
+    .back-link {
+      display: none;
     }
   }
 `;

@@ -183,7 +183,7 @@ const Tabs = ({ activeTab, setActiveTab, data, currentAqi, timeScale, setTimeSca
                     <th className="py-4 px-6 text-left">Date</th>
                     <th className="py-4 px-6 text-left">AQI</th>
                     <th className="py-4 px-6 text-left">PM2.5</th>
-                    <th className="py-4 px-6 text-left">PM10</th>
+                    <th className="py-4 px-6 text-left">CO</th>
                     <th className="py-4 px-6 text-left">Status</th>
                   </tr>
                 </thead>
@@ -216,7 +216,7 @@ const Tabs = ({ activeTab, setActiveTab, data, currentAqi, timeScale, setTimeSca
                           </div>
                         </td>
                         <td className="py-4 px-6">{item.pm2_5} µg/m³</td>
-                        <td className="py-4 px-6">{item.pm10} µg/m³</td>
+                        <td className="py-4 px-6">{item.co} µg/m³</td>
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-2">
                             {status.icon}

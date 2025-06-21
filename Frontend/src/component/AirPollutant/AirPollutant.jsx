@@ -175,7 +175,7 @@ function AirPollutionMap() {
                     }}
                 ></div>
             </div>
-            <Footer />
+            
         </>
     );
 }

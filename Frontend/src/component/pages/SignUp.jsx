@@ -105,6 +105,9 @@ const Signup = () => {
 
   return (
     <StyledWrapper>
+      <Link to="/" className="back-link">
+        <span className="back-icon">←</span> Back
+      </Link>
       <div className="container">
         <div className="signup-card">
           <div className="card-header">
@@ -240,6 +243,12 @@ const float = keyframes`
   100% { transform: translateY(0px); }
 `;
 
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
+
 // Styled components
 const StyledWrapper = styled.div`
   display: flex;
@@ -250,6 +259,37 @@ const StyledWrapper = styled.div`
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   position: relative;
+
+  .back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #80b918;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 50px;
+    z-index: 3;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(128, 185, 24, 0.3);
+
+    &:hover {
+      background: #6aa017;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 18px rgba(128, 185, 24, 0.5);
+      animation: ${pulse} 1.5s infinite;
+    }
+
+    .back-icon {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
 
   .container {
     width: 100%;
@@ -268,6 +308,7 @@ const StyledWrapper = styled.div`
     padding: 40px;
     width: 100%;
     max-width: 500px;
+    margin: 20px 0;
     animation: ${fadeIn} 0.6s ease-out;
     position: relative;
     z-index: 2;
@@ -506,6 +547,10 @@ const StyledWrapper = styled.div`
     }
 
     .decorative-elements {
+      display: none;
+    }
+
+    .back-link {
       display: none;
     }
   }

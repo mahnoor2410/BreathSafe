@@ -219,7 +219,7 @@ const ChatDetail = () => {
             </p>
           </div>
 
-          <form onSubmit={handleUpdateTitle} className="input-group">
+          <div className="input-group">
             <label htmlFor="title" className="input-label">
               Enter New Title:
             </label>
@@ -235,10 +235,10 @@ const ChatDetail = () => {
               />
               <span className="input-icon">✏️</span>
             </div>
-            <button type="submit" className="save-button">
+            <button onClick={handleUpdateTitle} className="save-button">
               Save Title
             </button>
-          </form>
+          </div>
 
           {successMessage && (
             <div className="success-message">{successMessage}</div>
@@ -305,7 +305,7 @@ const StyledWrapper = styled.div`
   align-items: center;
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow: hidden;
   position: relative;
 
@@ -317,56 +317,61 @@ const StyledWrapper = styled.div`
     align-items: center;
     position: relative;
     z-index: 1;
+    padding: 40px 0; /* Added top and bottom padding for margin effect */
   }
 
   .detail-card {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    padding: 48px;
     width: 100%;
-    max-width: 900px;
+    max-width: 960px;
     animation: ${fadeIn} 0.6s ease-out;
     position: relative;
     z-index: 2;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .card-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 
     h2 {
-      color: #2c3e50;
-      font-size: 28px;
+      color: #80b918; /* Changed to green to match theme */
+      font-size: 32px;
       font-weight: 700;
       margin-bottom: 8px;
+      letter-spacing: -0.5px;
     }
 
     p {
       color: #7f8c8d;
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: 400;
     }
   }
 
   .chat-details {
     border: 2px solid #e0e0e0;
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 25px;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+    background: #ffffff;
 
     .chat-title {
       color: #2c3e50;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .chat-content {
       color: #7f8c8d;
-      font-size: 14px;
-      margin-bottom: 15px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      line-height: 1.5;
 
       strong {
         color: #2c3e50;
@@ -380,13 +385,13 @@ const StyledWrapper = styled.div`
 
   .input-group {
     position: relative;
-    margin-bottom: 25px;
+    margin-bottom: 32px;
 
     .input-label {
       display: block;
       margin-bottom: 8px;
       color: #2c3e50;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
     }
 
@@ -398,8 +403,8 @@ const StyledWrapper = styled.div`
       width: 100%;
       padding: 15px 15px 15px 45px;
       border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 14px;
+      border-radius: 12px;
+      font-size: 15px;
       transition: all 0.3s ease;
       background-color: #f8f9fa;
 
@@ -425,21 +430,21 @@ const StyledWrapper = styled.div`
 
     .save-button {
       width: auto;
-      padding: 15px 25px;
+      padding: 12px 24px;
       background: #80b918;
       color: white;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 10px;
+      margin-top: 12px;
 
       &:hover {
         background: #6aa017;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(128, 185, 24, 0.4);
+        box-shadow: 0 8px 20px rgba(128, 185, 24, 0.4);
       }
 
       &:active {
@@ -450,38 +455,44 @@ const StyledWrapper = styled.div`
 
   .success-message {
     color: #27ae60;
-    margin-bottom: 25px;
-    font-size: 14px;
+    margin-bottom: 32px;
+    font-size: 15px;
     text-align: center;
+    background: #f0fdf4;
+    padding: 12px;
+    border-radius: 8px;
   }
 
   .error-message {
     color: #c0392b;
-    margin-bottom: 25px;
-    font-size: 14px;
+    margin-bottom: 32px;
+    font-size: 15px;
     text-align: center;
+    background: #fef2f2;
+    padding: 12px;
+    border-radius: 8px;
 
     .raw-response {
       background: #f8f9fa;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 12px;
-      border-radius: 5px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 13px;
+      border-radius: 6px;
       overflow-x: auto;
     }
   }
 
   .action-group {
     display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 16px;
+    margin-bottom: 32px;
 
     .back-button, .delete-button {
-      padding: 15px 25px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
     }
@@ -493,7 +504,7 @@ const StyledWrapper = styled.div`
       &:hover {
         background: #6aa017;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(128, 185, 24, 0.4);
+        box-shadow: 0 8px 20px rgba(128, 185, 24, 0.4);
       }
 
       &:active {
@@ -508,7 +519,7 @@ const StyledWrapper = styled.div`
       &:hover {
         background: #a52921;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(192, 57, 43, 0.4);
+        box-shadow: 0 8px 20px rgba(192, 57, 43, 0.4);
       }
 
       &:active {
@@ -519,14 +530,14 @@ const StyledWrapper = styled.div`
 
   .card-footer {
     text-align: center;
-    margin-top: 25px;
-    font-size: 14px;
+    margin-top: 32px;
+    font-size: 15px;
     color: #7f8c8d;
 
     .footer-link {
       color: #80b918;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 500;
       transition: all 0.3s ease;
 
       &:hover {
@@ -540,7 +551,9 @@ const StyledWrapper = styled.div`
     text-align: center;
     color: #7f8c8d;
     font-size: 16px;
-    padding: 20px;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
   }
 
   .decorative-elements {
@@ -553,39 +566,39 @@ const StyledWrapper = styled.div`
     .circle {
       position: absolute;
       border-radius: 50%;
-      background: rgba(128, 185, 24, 0.1);
+      background: rgba(128, 185, 24, 0.15);
       animation: ${float} 6s ease-in-out infinite;
     }
 
     .circle-1 {
-      width: 300px;
-      height: 300px;
-      top: -100px;
-      left: -100px;
+      width: 320px;
+      height: 320px;
+      top: -120px;
+      left: -120px;
       animation-delay: 0s;
     }
 
     .circle-2 {
-      width: 200px;
-      height: 200px;
-      bottom: -50px;
-      right: -50px;
+      width: 220px;
+      height: 220px;
+      bottom: -60px;
+      right: -60px;
       animation-delay: 2s;
     }
 
     .circle-3 {
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
       top: 50%;
-      right: 100px;
+      right: 120px;
       animation-delay: 4s;
     }
   }
 
   @media (max-width: 768px) {
     .detail-card {
-      padding: 30px 20px;
-      margin: 20px;
+      padding: 32px 16px;
+      margin: 24px;
     }
 
     .decorative-elements {
@@ -594,7 +607,7 @@ const StyledWrapper = styled.div`
 
     .action-group {
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
 
       .back-button, .delete-button {
         width: 100%;

@@ -246,7 +246,8 @@ const AirPollutantData = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 pt-16">
+        {/* Added pt-16 (padding-top: 64px) to offset navbar */}
         <div className="container mx-auto px-4 py-8">
           <Header data={data} handleFetchAnotherLocation={handleFetchAnotherLocation} />
           {error && (

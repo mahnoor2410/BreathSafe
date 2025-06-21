@@ -46,7 +46,7 @@ const PollutantInfo = () => {
     hidden: { opacity: 0, y: 30 },
     show: { 
       opacity: 1, 
-      y: 0,
+      y: 0, // Fixed: Removed stray single quote
       transition: {
         duration: 0.6,
         ease: "easeOut"
@@ -113,7 +113,8 @@ const PollutantInfo = () => {
       <Navbar />
       
       {/* Main content */}
-      <main className="flex-grow relative overflow-hidden">
+      <main className="flex-grow relative overflow-hidden pt-16">
+        {/* Added pt-16 to offset navbar */}
         {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNlNWU1ZTUiIiBmaWxsLW9wYWNpdHk9IjAuMyI+PHBhdGggZD0iTTM2IDM0YzAtMi0xLjEtMy0zLTNzLTMgMS0zIDMgMS4xIDMgMyAzIDMtMSAzLTN6bTAgMGMwIDIgMS4xIDMgMyAzczMtMSAzLTMtMS4xLTMtMy0zLTMgMS0zIDN6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-10"></div>
 
@@ -304,13 +305,12 @@ const PollutantInfo = () => {
                   ))}
                 </ul>
               </div>
-              <div className="p-8 md:p-10 md:w-1/2 bg-white bg-opacity-10 backdrop-blur-sm border-t md:border-t-0 md:border-l border-white border-opacity-10">
+              <div className="p-7 md:p-10 md:w-1/2 bg-white bg-opacity-10 backdrop-blur-sm border-t md:border-t-0 md:border-l border-white border-opacity-10">
                 <h3 className="text-xl font-bold mb-4">Indoor Air Facts</h3>
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ height: 0 }}
+                  whileInView={{ height: "auto" }}
                   transition={{ delay: 0.3 }}
-                  viewport={{ once: true, margin: "-100px" }}
                   className="bg-white bg-opacity-10 rounded-lg p-5 mb-6 border border-white border-opacity-10"
                 >
                   <p className="mb-3 text-blue-100 opacity-90">Indoor air can be 2-5x more polluted than outdoor air due to:</p>

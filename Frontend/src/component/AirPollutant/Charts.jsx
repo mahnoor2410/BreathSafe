@@ -188,7 +188,7 @@ const Charts = ({ data, timeScale, setTimeScale, aqiChartData, pm25ChartData, pm
         className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
       >
         <div className="mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">Pollutant Levels</h3>
+          <h3 className="text-xl font-semibold text-gray-800"> Current Air Pollutants Level</h3>
           <p className="text-sm text-gray-500">Current concentration in µg/m³</p>
         </div>
         <div className="grid grid-cols-2 gap-4">
