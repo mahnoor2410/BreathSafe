@@ -578,6 +578,7 @@ const StyledWrapper = styled.div`
               left: 0;
             }
 
+            
             &.valid {
               color: #80b918;
             }
