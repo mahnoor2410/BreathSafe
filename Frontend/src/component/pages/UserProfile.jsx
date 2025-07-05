@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaSignOutAlt, FaSave, FaUserEdit, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { FaSignOutAlt, FaArrowLeft, FaUserEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 
 function UserProfile() {
@@ -11,18 +12,16 @@ function UserProfile() {
     password: ''
   });
 
-  const [isEditable, setIsEditable] = useState({
-    username: false,
-    email: false
-  });
-
   const [isLoading, setIsLoading] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
+    email: '',
     newPassword: '',
     confirmPassword: ''
   });
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/userprofile', {
@@ -34,6 +33,7 @@ function UserProfile() {
       })
       .then(data => {
         setUser(data);
+        setPasswordData(prev => ({ ...prev, email: data.email || '' }));
         setIsLoading(false);
       })
       .catch(() => {
@@ -42,45 +42,58 @@ function UserProfile() {
       });
   }, [navigate]);
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setUser(prev => ({ ...prev, [id]: value }));
-  };
-
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleEditClick = (field) => {
-    setIsEditable(prev => ({ ...prev, [field]: !prev[field] }));
-  };
-
-  const handleSaveChanges = () => {
-    // Here you would typically make an API call to save changes
-    setIsEditable({ username: false, email: false });
-    // Show success message
-    alert('Profile updated successfully!');
-  };
-
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    // Add password validation and API call here
+    setIsSubmitting(true);
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Passwords don't match!");
+      setMessage("New passwords do not match.");
+      setMessageType("danger");
+      setIsSubmitting(false);
       return;
     }
-    alert('Password changed successfully!');
-    setShowPasswordModal(false);
-    setPasswordData({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    });
+
+    const data = {
+      email: passwordData.email,
+      new_password: passwordData.newPassword,
+      confirm_password: passwordData.confirmPassword,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/change_password", data, {
+        withCredentials: true
+      });
+
+      setMessage(response.data.message);
+      setMessageType("success");
+
+      if (response.status === 200) {
+        setPasswordData({
+          email: user.email || '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        setShowPasswordModal(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setMessage(error.response.data.message || "Error updating password.");
+        setMessageType("danger");
+      } else {
+        setMessage("Network Error");
+        setMessageType("danger");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLogout = () => {
-    // Here you would typically make an API call to logout
     alert('Logged out successfully!');
     navigate('/login');
   };
@@ -113,7 +126,7 @@ function UserProfile() {
 
           <div className="profile-form">
             {['username', 'email'].map((field) => (
-              <div key={field} className={`input-group ${isEditable[field] ? 'editable' : ''}`}>
+              <div key={field} className="input-group">
                 <label htmlFor={field}>
                   {field === 'username' ? 'Username' : 'Email Address'}
                 </label>
@@ -122,15 +135,8 @@ function UserProfile() {
                     id={field}
                     type={field === 'email' ? 'email' : 'text'}
                     value={user[field] || ''}
-                    onChange={handleInputChange}
-                    readOnly={!isEditable[field]}
+                    readOnly
                   />
-                  <button
-                    onClick={() => handleEditClick(field)}
-                    className={`edit-button ${isEditable[field] ? 'active' : ''}`}
-                  >
-                    <FaEdit />
-                  </button>
                 </div>
               </div>
             ))}
@@ -144,24 +150,16 @@ function UserProfile() {
                   readOnly
                 />
                 <button
+                  type="button"
+                  className="change-password-button"
                   onClick={() => setShowPasswordModal(true)}
-                  className="edit-button"
                 >
-                  <FaLock />
+                  Change Password
                 </button>
               </div>
             </div>
 
             <div className="button-group">
-              <button
-                onClick={handleSaveChanges}
-                className="save-button"
-                disabled={!isEditable.username && !isEditable.email}
-              >
-                <FaSave />
-                <span>Save Changes</span>
-              </button>
-
               <button
                 onClick={handleLogout}
                 className="logout-button"
@@ -177,34 +175,58 @@ function UserProfile() {
           <div className="modal-overlay">
             <div className="password-modal">
               <h2>Change Password</h2>
+              <p>Enter your email and new password</p>
+
+              {message && (
+                <div className={`message ${messageType}`}>
+                  {messageType === "success" ? (
+                    <FaCheckCircle className="message-icon" />
+                  ) : (
+                    <FaExclamationTriangle className="message-icon" />
+                  )}
+                  <span>{message}</span>
+                </div>
+              )}
+
               <form onSubmit={handlePasswordSubmit}>
                 <div className="input-group">
-                  <label>Current Password</label>
+                  <label htmlFor="email">Email Address</label>
                   <input
-                    type="password"
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
+                    type="email"
+                    name="email"
+                    value={passwordData.email}
                     onChange={handlePasswordChange}
+                    placeholder="Enter your email"
                     required
                   />
                 </div>
                 <div className="input-group">
-                  <label>New Password</label>
+                  <label htmlFor="newPassword">New Password</label>
                   <input
                     type="password"
                     name="newPassword"
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
+                    placeholder="Create new password"
                     required
                   />
+                  <div className="password-tip">
+                    <span>Password should contain:</span>
+                    <ul>
+                      <li className={passwordData.newPassword.length >= 8 ? "valid" : ""}>At least 8 characters</li>
+                      <li className={/\d/.test(passwordData.newPassword) ? "valid" : ""}>One number</li>
+                      <li className={/[!@#$%^&*]/.test(passwordData.newPassword) ? "valid" : ""}>One special character</li>
+                    </ul>
+                  </div>
                 </div>
                 <div className="input-group">
-                  <label>Confirm New Password</label>
+                  <label htmlFor="confirmPassword">Confirm New Password</label>
                   <input
                     type="password"
                     name="confirmPassword"
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange}
+                    placeholder="Confirm your new password"
                     required
                   />
                 </div>
@@ -218,9 +240,17 @@ function UserProfile() {
                   </button>
                   <button
                     type="submit"
-                    className="submit-button"
+                    disabled={isSubmitting}
+                    className={isSubmitting ? "submitting" : ""}
                   >
-                    Change Password
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner"></span>
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Password"
+                    )}
                   </button>
                 </div>
               </form>
@@ -357,59 +387,35 @@ const StyledWrapper = styled.div`
 
     .input-wrapper {
       position: relative;
-      display: flex;
-      align-items: center;
 
       input {
         width: 100%;
-        padding: 15px 50px 15px 15px;
+        padding: 15px;
         border: 2px solid #e0e0e0;
         border-radius: 10px;
         font-size: 14px;
-        transition: all 0.3s ease;
-        background-color: #f8f9fa;
-
-        &:focus {
-          border-color: #80b918;
-          box-shadow: 0 0 0 3px rgba(128, 185, 24, 0.2);
-          outline: none;
-          background-color: white;
-        }
-
-        &:read-only {
-          background-color: #f1f1f1;
-          color: #7f8c8d;
-        }
+        background-color: #f1f1f1;
+        color: #7f8c8d;
+        cursor: not-allowed;
       }
 
-      .edit-button {
-        position: absolute;
-        right: 15px;
-        background: none;
+      .change-password-button {
+        margin-top: 10px;
+        padding: 10px 15px;
         border: none;
-        color: #7f8c8d;
+        border-radius: 10px;
+        background: #80b918;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
+        width: 100%;
+        text-align: center;
 
         &:hover {
-          color: #80b918;
+          background: #6aa017;
         }
-
-        &.active {
-          color: #80b918;
-        }
-      }
-    }
-
-    &.editable {
-      .input-wrapper input {
-        background-color: white;
-        color: #2c3e50;
       }
     }
   }
@@ -432,26 +438,6 @@ const StyledWrapper = styled.div`
       justify-content: center;
       gap: 8px;
       border: none;
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      svg {
-        font-size: 18px;
-      }
-    }
-
-    .save-button {
-      background: #80b918;
-      color: white;
-
-      &:hover:not(:disabled) {
-        background: #6aa017;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(128, 185, 24, 0.4);
-      }
     }
 
     .logout-button {
@@ -492,26 +478,111 @@ const StyledWrapper = styled.div`
       color: #2c3e50;
       font-size: 24px;
       font-weight: 700;
-      margin-bottom: 25px;
+      margin-bottom: 8px;
       text-align: center;
+    }
+
+    p {
+      color: #7f8c8d;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      padding: 12px 15 Waltham;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      animation: ${fadeIn} 0.3s ease-out;
+
+      &.success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      &.danger {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .message-icon {
+        font-size: 18px;
+      }
     }
 
     .input-group {
       margin-bottom: 20px;
-    }
 
-    input {
-      width: 100%;
-      padding: 15px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 14px;
-      transition: all 0.3s ease;
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-size: 14px;
+        font-weight: 600;
+      }
 
-      &:focus {
-        border-color: #80b918;
-        box-shadow: 0 0 0 3px rgba(128, 185, 24, 0.2);
-        outline: none;
+      input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+
+        &:focus {
+          border-color: #80b918;
+          box-shadow: 0 0 0 3px rgba(128, 185, 24, 0.2);
+          outline: none;
+          background-color: white;
+        }
+
+        &::placeholder {
+          color: #bdc3c7;
+        }
+      }
+
+      .password-tip {
+        margin-top: 10px;
+       
+
+ font-size: 12px;
+        color: #7f8c8d;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+
+        span {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: 600;
+        }
+
+        ul {
+          list-style: none;
+          padding-left: 0;
+          margin: 5px 0 0;
+
+          li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 3px;
+
+            &:before {
+              content: "•";
+              position: absolute;
+              left: 0;
+            }
+
+            &.valid {
+              color: #80b918;
+            }
+          }
+        }
       }
     }
 
@@ -529,6 +600,20 @@ const StyledWrapper = styled.div`
         cursor: pointer;
         transition: all 0.3s ease;
         border: none;
+        height: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+
+        &:disabled {
+          background: #a5d363;
+          cursor: not-allowed;
+        }
+
+        &.submitting {
+          background: #a5d363;
+        }
       }
 
       .cancel-button {
@@ -544,9 +629,20 @@ const StyledWrapper = styled.div`
         background: #80b918;
         color: white;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background: #6aa017;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(128, 185, 24, 0.4);
         }
+      }
+
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: ${spin} 1s ease-in-out infinite;
       }
     }
   }
