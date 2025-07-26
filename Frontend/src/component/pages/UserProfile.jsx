@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSignOutAlt, FaArrowLeft, FaUserEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaSignOutAlt, FaArrowLeft, FaUserEdit, FaCheckCircle, FaExclamationTriangle, FaLock } from 'react-icons/fa';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 
@@ -150,16 +150,23 @@ function UserProfile() {
                   readOnly
                 />
                 <button
-                  type="button"
-                  className="change-password-button"
                   onClick={() => setShowPasswordModal(true)}
+                  className="edit-button"
                 >
-                  Change Password
+                  <FaLock />
                 </button>
               </div>
             </div>
 
             <div className="button-group">
+              <button
+                onClick={() => setShowPasswordModal(true)}
+                className="change-button"
+              >
+                <FaLock />
+                <span>Change Password</span>
+              </button>
+
               <button
                 onClick={handleLogout}
                 className="logout-button"
@@ -387,10 +394,12 @@ const StyledWrapper = styled.div`
 
     .input-wrapper {
       position: relative;
+      display: flex;
+      align-items: center;
 
       input {
         width: 100%;
-        padding: 15px;
+        padding: 15px 50px 15px 15px;
         border: 2px solid #e0e0e0;
         border-radius: 10px;
         font-size: 14px;
@@ -399,22 +408,22 @@ const StyledWrapper = styled.div`
         cursor: not-allowed;
       }
 
-      .change-password-button {
-        margin-top: 10px;
-        padding: 10px 15px;
+      .edit-button {
+        position: absolute;
+        right: 15px;
+        background: none;
         border: none;
-        border-radius: 10px;
-        background: #80b918;
-        color: white;
-        font-size: 14px;
-        font-weight: 600;
+        color: #7f8c8d;
         cursor: pointer;
         transition: all 0.3s ease;
-        width: 100%;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
 
         &:hover {
-          background: #6aa017;
+          color: #80b918;
         }
       }
     }
@@ -438,6 +447,21 @@ const StyledWrapper = styled.div`
       justify-content: center;
       gap: 8px;
       border: none;
+
+      svg {
+        font-size: 18px;
+      }
+    }
+
+    .change-button {
+      background: #80b918;
+      color: white;
+
+      &:hover {
+        background: #6aa017;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(128, 185, 24, 0.4);
+      }
     }
 
     .logout-button {
@@ -490,7 +514,7 @@ const StyledWrapper = styled.div`
     }
 
     .message {
-      padding: 12px 15 Waltham;
+      padding: 12px 15px;
       border-radius: 8px;
       margin-bottom: 25px;
       display: flex;
@@ -548,9 +572,7 @@ const StyledWrapper = styled.div`
 
       .password-tip {
         margin-top: 10px;
-       
-
- font-size: 12px;
+        font-size: 12px;
         color: #7f8c8d;
         padding: 10px;
         background: #f8f9fa;
@@ -578,7 +600,6 @@ const StyledWrapper = styled.div`
               left: 0;
             }
 
-            
             &.valid {
               color: #80b918;
             }
