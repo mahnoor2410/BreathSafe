@@ -26,7 +26,6 @@ function AirPollutionMap() {
 
         checkAuthStatus();
 
-        // Add event listener for storage changes (e.g., logout from another tab)
         window.addEventListener("storage", checkAuthStatus);
 
         return () => {
